@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Taker App</title>
+    <style>
+        body {
+            align-items: center;
+            justify-content: center;
+            display: flex ;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            border-radius: 10px;
+            margin: -30px 100px;
+        }
+
+        .container .display {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: red;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .container.click {
+            display: none;
+        }
+   
+        .note-taker {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 20px;
+            margin-top: -350px;
+            box-shadow: 0px 0px 8px rgba(0,0,0,.2);
+            border-radius: 10px;
+        }
+
+        .note-taker textarea  {
+            outline: none;
+            overflow: hidden;
+            border: none;
+            border: 1px solid rgba(199, 194, 194, 0.308);
+            padding: 10px 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 8px rgba(0,0,0,.1);
+        }
+
+
+        .note-taker h2 {
+            letter-spacing: 1px;
+            font-size: 20px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: rgb(54, 46, 46);
+        }
+
+        .note-taker.active , #note-container.active,  #noteInput.active, #note-wrapper.active{
+            background-color: rgba(199, 194, 194, 0.308);
+            pointer-events: none;
+        }
+
+        .text-container {
+            pointer-events: unset;
+        }
+
+        .note-taker textarea {
+            padding: 10px 10px;
+            box-sizing: border-box;
+            margin: 10px 0;
+        }
+
+        .note-taker button {
+            border: none;
+            background-color: #04cf85;
+            color: white;
+            font-weight: 400;
+            letter-spacing: 1px;
+            padding: 10px 30px;
+            width: 60%;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: .1s ease-in-out;
+            margin: 5px auto;
+        }
+
+        #note-container {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            width: 50%;
+            height: auto;
+            position: fixed;
+            margin-top: 30px;
+        }
+
+        #note-wrapper {
+            width: 90%;
+            height: 30%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            overflow: auto;
+            box-shadow: 0px 0px 8px rgba(0,0,0,.2);
+            margin-top: 200px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            justify-content: space-between;
+            line-height: 10px;
+            transition: .2s ease-in-out;
+        }
+
+
+        .note-wrapper #myNote {
+            display: flex;
+            flex-direction: column;
+            width: 44%;
+           box-shadow: 0px 0px 8px rgba(0,0,0,.1);
+            padding: 10px 10px;
+            margin: 10px 1px;
+            border-radius: 10px;
+        } 
+
+        #myNote .but {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .but button {
+            padding: 8px 10px ;
+            border: none;
+            background: #04cf85;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            height: auto;
+            max-height: 250px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 8px rgba(0,0,0,.2);
+            position: fixed;
+            background-color: white;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            transition: .2s ease-in-out;
+            /* transform: scale(.5) */
+        }
+
+        .text-container.active {
+            transform: scale(.1);
+            transition:.2s ease-in-out;
+        }
+
+        .text-container > div {
+            display: flex;
+            flex-direction: column; 
+            overflow: auto;
+        }
+        .text-container  button {
+            border: none;
+            padding: 0px 6px 4px 6px;
+            background-color: red;
+            color: white;
+            border-radius: 3px;
+            margin-top: -40px;
+            margin-left: 95%;
+            cursor: pointer;
+            position: absolute;
+            border-radius: 50%;
+            font-weight: 900;
+            font-size: 12px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body class="body">
+    <div class="note-taker">
+        <h2>Welcome to Magic Notes</h2>
+        <textarea id="noteInput" cols="40" rows="4" placeholder="Notes here ! "></textarea>
+        <button id="addNote">Add Note</button>
+    </div>
+
+<div id="note-wrapper"></div>
+   
+
+      
+<script>
+    var noteContainer = []
+    var add = document.getElementById("addNote").addEventListener("click", addNote)
+
+    function addNote() {
+       var noteInput = document.getElementById("noteInput").value
+       var noteTitle = ` Note ${noteContainer.length + 1}`
+       var noteSliced = noteInput.split(' ').splice( 0 , 5 ).join(' ')
+       var noteHTML = `
+       <div id="myNote">
+        <h4 id="title">${noteTitle}</h4>
+        <p id="text">${noteSliced}</p>
+       <div class="but">
+        <button class="delete-note">Delete Note</button>
+        <button class="view">view</button>
+       </div>
+        </div>
+       `
+
+       if ( noteInput.trim() === "") {
+           alert("Enter something and try again")
+           return 0
+       }
+
+       document.getElementById("note-wrapper").innerHTML += noteHTML
+       noteContainer.push(
+           {
+               title : noteTitle,
+               text : noteInput
+           }
+       )
+
+       document.getElementById("noteInput").value = ""
+       var deleteNotes = document.querySelectorAll(".delete-note")
+       deleteNotes.forEach(function(button) {
+           button.addEventListener("click", ()=> {
+              var del = button.parentNode.parentNode.remove()
+              var index = noteContainer.indexOf(del)
+              noteContainer.splice( index , 1)
+           })
+       })
+
+       var view = document.querySelectorAll(".view")
+       view.forEach(function(button) {
+           button.addEventListener("click", ()=> {
+                var body = document.querySelector(".body")
+
+                var textContainer = document.createElement("div")
+                var display = document.createElement("div")
+                var closeButton = document.createElement("button")
+
+                closeButton.textContent = "x"
+                display.innerText = noteInput
+
+                textContainer.appendChild(closeButton)
+                textContainer.appendChild(display)
+
+                body.appendChild(textContainer)
+                textContainer.style.transition = ".4s"
+
+                textContainer.classList.add("text-container")
+                closeButton.addEventListener("click", ()=>  {
+                  body.removeChild(textContainer)   
+                  textContainer.classList.toggle('active')   
+                  display.innerText = ""     
+                })
+           })
+       })
+
+      
+     }
+</script>
+</body>
+</html>
